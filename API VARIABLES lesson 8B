@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "96e4298c-03f9-4d3b-be44-999da57b0a13",
+		"_postman_id": "c7acf7be-813f-4ee1-9306-4cb75e3a630e",
 		"name": "APICollection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -20,50 +20,62 @@
 									"console.log(jsonData.entry[1].title);",
 									"",
 									"pm.environment.set(\"entityId\", jsonData.entry[10].id);",
-									"pm.environment.set(\"entitytittle\", jsonData.entry[1].title);",
+									"pm.environment.set(\"entityTitle\", jsonData.entry[1].title);",
 									"",
 									"",
 									"pm.test(\"Status code Should be 200\", function () {",
-									"    pm.response.to.have.status(200);})",
-									"",
+									"    pm.response.to.have.status(200);",
+									"});",
 									"",
 									"pm.test(\"Status code name should have an OK string\", function () {",
 									"    pm.response.to.have.status(\"OK\");",
-									"",
-									"    var jsonData = pm.response.json()",
-									"    console.log(jsonData);",
-									"    console.log(jsonData.totalResults);",
-									"    console.log(jsonData.entry[14].title);",
-									"    console.log(jsonData.entry[7].status);",
-									"    console.log(jsonData.entry[10].id)",
 									"});",
-									"pm.test(\"confirm that the total result is 31\", function () {",
-									"    var jsonData = pm.response.json();",
+									"var jsonData = pm.response.json();",
+									"console.log(jsonData)",
+									"console.log(jsonData.entry)",
+									"console.log(jsonData.entry[14].title)",
+									"console.log(jsonData.entry[7].status)",
+									"console.log(jsonData.entry[7].title)",
+									"console.log(jsonData.entry[10].id)",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"pm.test(\"confirm that entry with task 8 title has equal to 1\", function () {",
+									"  ",
+									"    pm.expect(jsonData.entry[7].status).to.eql(\"1\");",
+									"});",
+									"",
+									"pm.test(\"confirm that entry with task 11 title has an ID equal to 11\", function () {",
+									"  ",
+									"    pm.expect(jsonData.entry[10].id).to.eql(\"11\");",
+									"});",
+									"",
+									"",
+									"",
+									"",
+									"pm.test(\"confirm that the total result should be 31\", function () {",
+									"  ",
 									"    pm.expect(jsonData.totalResults).to.eql(\"31\");",
 									"});",
 									"",
-									"pm.test(\"confirm that the entry 8 title has status equal to 1\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.entry[7].status).to.eql(\"1\");",
-									"});",
-									"pm.test(\"confirm that the entry with task 11 has no ID equal to 11\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.entry[10].status).to.eql(\"11\");",
-									"});",
-									"",
-									"",
-									"",
-									"",
-									"pm.test(\"confirm that the total result is 31\", function () {",
-									"    var jsonData = pm.response.json();",
+									"pm.test(\"confirm that the total result should be 31\", function () {",
+									"  ",
 									"    pm.expect(jsonData.entry[14].title).to.eql(\"Task 15\");",
 									"});",
 									"",
 									"",
-									"pm.test(\"confirm that Task 1 is present\", function () {",
-									"    pm.expect(pm.response.text()).is.equal(\"Task 1\");",
-									"});",
 									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"31\");",
+									"});",
+									"pm.test(\"confirm that task 1 is present\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Task 1\");",
+									"});",
 									"",
 									"",
 									"",
@@ -77,8 +89,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"\r",
-									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -188,7 +198,38 @@
 			"name": "Get Books",
 			"item": [
 				{
-					"name": "Get Books - valid book type",
+					"name": "Get All Books",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.variables.get(\"bookId\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlBook}}/books",
+							"host": [
+								"{{baseUrlBook}}"
+							],
+							"path": [
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Books - valid book type Copy",
 					"event": [
 						{
 							"listen": "test",
@@ -198,30 +239,8 @@
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"const response = pm.response.json();\r",
-									"// print any kind of variables/message on the screen\r",
-									"console.log(response[2].name);\r",
-									"pm.test(\"Search for a book name called Viscount Who Loved Me\", function (){\r",
-									"    pm.expect(response[3].name).to.eql(\"Viscount Who Loved Me\")\r",
-									"});\r",
-									"\r",
-									"/*const Fiction = response.filter((book) => book.type === \"fiction\");\r",
-									"console.log(Fiction)\r",
-									"//Print out the id of a fiction book that is available called \"The Midnight Library\"*/\r",
-									"\r",
-									"const Fiction = response.filter((book) => book.type === \"fiction\" && book.available === true && book.name === \"Viscount Who Loved Me\")\r",
-									"\r",
-									"console.log(Fiction[0].id);\r",
-									"\r",
-									"pm.test(\"The id number of a fiction book that available with the name The Midnight Library is \" , function () {\r",
-									"    pm.expect(Fiction[0].name).eql(\"Viscount Who Loved Me\")\r",
-									"});\r",
-									"\r",
-									"pm.globals.set(\"bookId\", Fiction[0].id);\r",
-									"\r",
-									"\r",
-									"\r",
-									"\r",
-									"\r",
+									"console.log(response[2].id)\r",
+									"pm.environment.set(\"JustIAm\", response[2].id);\r",
 									""
 								],
 								"type": "text/javascript"
@@ -304,6 +323,71 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get Books - valid book type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"const response = pm.response.json();\r",
+									"// print any kind of variables/message on the screen\r",
+									"console.log(response[2].name);\r",
+									"pm.test(\"Search for a book name called Viscount Who Loved Me\", function (){\r",
+									"    pm.expect(response[3].name).to.eql(\"Viscount Who Loved Me\")\r",
+									"});\r",
+									"\r",
+									"/*const Fiction = response.filter((book) => book.type === \"fiction\");\r",
+									"console.log(Fiction)\r",
+									"//Print out the id of a fiction book that is available called \"The Midnight Library\"*/\r",
+									"\r",
+									"const Fiction = response.filter((book) => book.type === \"fiction\" && book.available === true && book.name === \"Viscount Who Loved Me\")\r",
+									"\r",
+									"console.log(Fiction[0].id);\r",
+									"\r",
+									"pm.test(\"The id number of a fiction book that available with the name The Midnight Library is \" , function () {\r",
+									"    pm.expect(Fiction[0].name).eql(\"Viscount Who Loved Me\")\r",
+									"});\r",
+									"\r",
+									"pm.globals.set(\"bookId\", Fiction[0].id);\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://simple-books-api.glitch.me/books?type=fiction",
+							"protocol": "https",
+							"host": [
+								"simple-books-api",
+								"glitch",
+								"me"
+							],
+							"path": [
+								"books"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "fiction"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -342,7 +426,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"bookId\": 1,\n  \"customerName\": \"John\"\n}",
+							"raw": "{\n  \"bookId\": {{JustIAm}},\n  \"customerName\": \"John\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -418,14 +502,14 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
 								"exec": [
 									"const OrderId = pm.response.json();\r",
 									"\r",
 									"console.log(OrderId.orderId);\r",
 									"pm.globals.set(\"OrderId\", OrderId.orderId);\r",
 									""
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -452,67 +536,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://simple-books-api.glitch.me/orders",
-							"protocol": "https",
+							"raw": "{{baseUrlBook}}/orders",
 							"host": [
-								"simple-books-api",
-								"glitch",
-								"me"
-							],
-							"path": [
-								"orders"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Get all orders",
-			"item": [
-				{
-					"name": "Get all orders",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "03c5abfe090876ab74a2a2ac4c079174a35fd88c9b88cd2164ff4b9d56c31d6c",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/orders",
-							"host": [
-								"{{baseUrl}}"
+								"{{baseUrlBook}}"
 							],
 							"path": [
 								"orders"
@@ -554,12 +580,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://simple-books-api.glitch.me/orders/:orderId",
-							"protocol": "https",
+							"raw": "{{baseUrlBook}}/orders/:orderId",
 							"host": [
-								"simple-books-api",
-								"glitch",
-								"me"
+								"{{baseUrlBook}}"
 							],
 							"path": [
 								"orders",
@@ -603,12 +626,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://simple-books-api.glitch.me/orders/:orderId",
-							"protocol": "https",
+							"raw": "{{baseUrlBook}}/orders/:orderId",
 							"host": [
-								"simple-books-api",
-								"glitch",
-								"me"
+								"{{baseUrlBook}}"
 							],
 							"path": [
 								"orders",
@@ -652,12 +672,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://simple-books-api.glitch.me/orders/:orderId",
-							"protocol": "https",
+							"raw": "{{baseUrlBook}}/orders/:orderId",
 							"host": [
-								"simple-books-api",
-								"glitch",
-								"me"
+								"{{baseUrlBook}}"
 							],
 							"path": [
 								"orders",
@@ -684,7 +701,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 204\", function () {\r",
 									"    pm.response.to.have.status(204);\r",
@@ -693,7 +709,8 @@
 									"pm.test(\"Status code name has string OK\", function () {\r",
 									"    pm.response.to.have.status(\"No Content\");\r",
 									"});"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -720,12 +737,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://simple-books-api.glitch.me/orders/:orderId",
-							"protocol": "https",
+							"raw": "{{baseUrlBook}}/orders/:orderId",
 							"host": [
-								"simple-books-api",
-								"glitch",
-								"me"
+								"{{baseUrlBook}}"
 							],
 							"path": [
 								"orders",
@@ -747,7 +761,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 204\", function () {\r",
 									"    pm.response.to.have.status(204);\r",
@@ -756,7 +769,8 @@
 									"pm.test(\"Status code name has string OK\", function () {\r",
 									"    pm.response.to.have.status(\"No Content\");\r",
 									"});"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -783,12 +797,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://simple-books-api.glitch.me/orders/:orderId",
-							"protocol": "https",
+							"raw": "{{baseUrlBook}}/orders/:orderId",
 							"host": [
-								"simple-books-api",
-								"glitch",
-								"me"
+								"{{baseUrlBook}}"
 							],
 							"path": [
 								"orders",
@@ -810,7 +821,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 204\", function () {\r",
 									"    pm.response.to.have.status(204);\r",
@@ -819,7 +829,8 @@
 									"pm.test(\"Status code name has string OK\", function () {\r",
 									"    pm.response.to.have.status(\"No Content\");\r",
 									"});"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -846,12 +857,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://simple-books-api.glitch.me/orders/:orderId",
-							"protocol": "https",
+							"raw": "{{baseUrlBook}}/orders/:orderId",
 							"host": [
-								"simple-books-api",
-								"glitch",
-								"me"
+								"{{baseUrlBook}}"
 							],
 							"path": [
 								"orders",
